@@ -12,14 +12,9 @@ from sklearn.preprocessing import StandardScaler
 app = Flask(__name__)
 CORS(app)
 
-MODEL_PATH = "model/gmm_bundle.pkl"
+MODEL_PATH = "model/gmm_3feature_bundle.pkl"   # 3-feature model
 CSV_NAME   = "diet_recommendations_dataset (best).csv"
-NUMERICAL  = [
-    "Age", "BMI", "Daily_Caloric_Intake",
-    "Cholesterol_mg/dL", "Blood_Pressure_mmHg", "Glucose_mg/dL",
-    "Weekly_Exercise_Hours", "Adherence_to_Diet_Plan",
-    "Dietary_Nutrient_Imbalance_Score",
-]
+NUMERICAL  = ["BMI", "Glucose_mg/dL", "Blood_Pressure_mmHg"]   # 3 key biomarkers
 
 def _find_csv():
     candidates = [f"dataset/{CSV_NAME}", f"../{CSV_NAME}", f"../dataset/{CSV_NAME}", CSV_NAME]
@@ -79,20 +74,11 @@ def predict():
 
     v = request.json
 
-    # Map frontend fields → model feature order
-    # sbp (systolic) used as Blood_Pressure_mmHg proxy
-    # activity (min/week) converted to hours/week
-    # Adherence and Nutrient Score use dataset mean defaults
+    # 3-feature model: BMI, Glucose, Blood Pressure (systolic)
     x = np.array([[
-        float(v["age"]),
         float(v["bmi"]),
-        float(v["kcal"]),
-        float(v["chol"]),
-        float(v["sbp"]),
         float(v["glucose"]),
-        float(v["activity"]) / 60.0,
-        70.0,
-        2.5,
+        float(v["sbp"]),
     ]])
 
     x_scaled   = bundle["scaler"].transform(x)

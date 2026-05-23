@@ -89,10 +89,10 @@ function App() {
           <TweakButton label="Replay analysis" onClick={() => setScreen("loading")} />
         </TweakSection>
         <TweakSection title="Try a profile">
-          <TweakButton label="Low risk" onClick={() => { setValues({age:35,bmi:22,glucose:88,chol:175,sbp:112,dbp:72,hr:65,kcal:2100,activity:240}); setScreen("form"); }} />
-          <TweakButton label="Hypertensive" onClick={() => { setValues({age:58,bmi:29,glucose:142,chol:235,sbp:152,dbp:94,hr:84,kcal:2800,activity:60}); setScreen("form"); }} />
-          <TweakButton label="Diabetic profile" onClick={() => { setValues({age:47,bmi:33,glucose:178,chol:220,sbp:128,dbp:82,hr:76,kcal:3100,activity:45}); setScreen("form"); }} />
-          <TweakButton label="Obesity profile" onClick={() => { setValues({age:39,bmi:36,glucose:108,chol:245,sbp:124,dbp:80,hr:78,kcal:3600,activity:30}); setScreen("form"); }} />
+          <TweakButton label="All healthy"      onClick={() => { setValues({bmi:22.0, glucose:88,  sbp:112}); setScreen("form"); }} />
+          <TweakButton label="Hypertensive"     onClick={() => { setValues({bmi:27.0, glucose:105, sbp:158}); setScreen("form"); }} />
+          <TweakButton label="Diabetic profile" onClick={() => { setValues({bmi:31.0, glucose:178, sbp:128}); setScreen("form"); }} />
+          <TweakButton label="Obesity profile"  onClick={() => { setValues({bmi:36.5, glucose:108, sbp:124}); setScreen("form"); }} />
         </TweakSection>
       </TweaksPanel>
     </div>

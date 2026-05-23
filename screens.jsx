@@ -6,15 +6,9 @@ const { useState, useEffect, useMemo, useRef } = React;
 // FIELD DEFINITIONS
 // ===========================================================================
 const FIELDS = [
-  { key: "age",      label: "Age",                        unit: "years",     min: 18,   max: 100,  step: 1,   healthy: [18, 65],     default: 42   },
-  { key: "bmi",      label: "Body Mass Index",            unit: "kg/m²",     min: 15,   max: 45,   step: 0.1, healthy: [18.5, 24.9], default: 27.4 },
-  { key: "glucose",  label: "Fasting Glucose",            unit: "mg/dL",     min: 60,   max: 300,  step: 1,   healthy: [70, 99],     default: 118  },
-  { key: "chol",     label: "Total Cholesterol",          unit: "mg/dL",     min: 100,  max: 350,  step: 1,   healthy: [125, 200],   default: 215  },
-  { key: "sbp",      label: "Systolic Blood Pressure",    unit: "mmHg",      min: 80,   max: 200,  step: 1,   healthy: [90, 120],    default: 134  },
-  { key: "dbp",      label: "Diastolic Blood Pressure",   unit: "mmHg",      min: 50,   max: 130,  step: 1,   healthy: [60, 80],     default: 86   },
-  { key: "hr",       label: "Resting Heart Rate",         unit: "bpm",       min: 40,   max: 120,  step: 1,   healthy: [60, 100],    default: 78   },
-  { key: "kcal",     label: "Daily Caloric Intake",       unit: "kcal/day",  min: 1000, max: 4500, step: 50,  healthy: [1800, 2400], default: 2650 },
-  { key: "activity", label: "Physical Activity",          unit: "min/week",  min: 0,    max: 600,  step: 15,  healthy: [150, 600],   default: 90   },
+  { key: "bmi",     label: "Body Mass Index",         unit: "kg/m²", min: 15, max: 45,  step: 0.1, healthy: [18.5, 24.9], default: 23.5 },
+  { key: "glucose", label: "Fasting Glucose",          unit: "mg/dL", min: 60, max: 300, step: 1,   healthy: [70, 99],     default: 89   },
+  { key: "sbp",     label: "Systolic Blood Pressure",  unit: "mmHg",  min: 80, max: 200, step: 1,   healthy: [90, 120],    default: 112  },
 ];
 
 const DEFAULT_VALUES = Object.fromEntries(FIELDS.map(f => [f.key, f.default]));
@@ -40,20 +34,34 @@ const MODEL_NAME_MAP = {
 // ===========================================================================
 function localPredict(v) {
   const norm = (x, lo, hi) => Math.max(0, Math.min(1, (x - lo) / (hi - lo)));
-  const htn = 0.45*norm(v.sbp,120,180) + 0.30*norm(v.dbp,80,110) + 0.10*norm(v.age,40,80) + 0.10*norm(v.chol,200,300) + 0.05*norm(v.hr,75,110);
-  const dm  = 0.55*norm(v.glucose,100,200) + 0.20*norm(v.bmi,25,40) + 0.10*norm(v.age,35,70) + 0.10*norm(v.kcal,2400,3800) + 0.05*(1-norm(v.activity,0,300));
-  const ob  = 0.45*norm(v.bmi,25,40) + 0.25*norm(v.kcal,2200,3800) + 0.20*(1-norm(v.activity,0,300)) + 0.05*norm(v.chol,180,280) + 0.05*norm(v.glucose,90,160);
-  const scores = [htn+0.02, dm+0.02, ob+0.02];
-  const exp = scores.map(s => Math.exp(s*3));
-  const sum = exp.reduce((a,b) => a+b, 0);
-  const probs = exp.map(e => e/sum);
+  const htn = 0.70 * norm(v.sbp, 120, 180) + 0.30 * norm(v.bmi, 22, 35);
+  const dm  = 0.75 * norm(v.glucose, 100, 200) + 0.25 * norm(v.bmi, 25, 40);
+  const ob  = 0.60 * norm(v.bmi, 25, 40) + 0.40 * norm(v.glucose, 90, 160);
+  const scores = [htn + 0.02, dm + 0.02, ob + 0.02];
+  const exp = scores.map(s => Math.exp(s * 3));
+  const sum = exp.reduce((a, b) => a + b, 0);
+  const probs = exp.map(e => e / sum);
   return { hypertension: probs[0], diabetes: probs[1], obesity: probs[2] };
+}
+
+// ===========================================================================
+// NATURAL / HEALTHY CHECK
+// ===========================================================================
+function isAllHealthy(values) {
+  return FIELDS.every(f => {
+    const v = values[f.key];
+    return typeof v === "number" && v >= f.healthy[0] && v <= f.healthy[1];
+  });
 }
 
 // ===========================================================================
 // CALL REAL GMM MODEL via Flask API
 // ===========================================================================
 async function callModel(values) {
+  // All measurements within healthy range → Natural result (no model needed)
+  if (isAllHealthy(values)) {
+    return { probs: null, source: "natural", prediction: "natural" };
+  }
   try {
     const res = await fetch("http://localhost:5000/predict", {
       method: "POST",
@@ -211,7 +219,7 @@ function FormScreen({ values, setValues, onSubmit, onReset }) {
         </div>
       </div>
       <div className="card card-pad">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 28 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 40 }}>
           {FIELDS.map(f => <Field key={f.key} field={f} value={values[f.key]} onChange={onChange} />)}
         </div>
       </div>
@@ -317,7 +325,81 @@ function LoadingScreen({ values, onDone }) {
 // ===========================================================================
 // RESULT SCREEN — uses real GMM model result
 // ===========================================================================
+function NaturalScreen({ onRestart, onEdit }) {
+  return (
+    <div className="container-narrow fade-up" style={{ paddingTop: 48, paddingBottom: 64 }}>
+      <div className="section-eyebrow">Step 3 · Result</div>
+      <div className="card" style={{ padding: 0, overflow: "hidden", marginTop: 20 }}>
+        {/* Green header */}
+        <div style={{ background: "#E6F4EC", borderBottom: "1px solid #A8D5B5", padding: "32px 36px", textAlign: "center" }}>
+          <div style={{ fontSize: 52, marginBottom: 12 }}>✅</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: "#1B5E35", letterSpacing: "-0.02em" }}>
+            Natural — All Healthy
+          </div>
+          <div style={{ fontSize: 15, color: "#2E7D4F", marginTop: 8 }}>
+            All nine measurements are within the healthy reference range.
+          </div>
+        </div>
+
+        {/* Healthy values list */}
+        <div style={{ padding: "28px 36px", borderBottom: "1px solid var(--border)" }}>
+          <div className="section-eyebrow" style={{ marginBottom: 16 }}>Measurement summary</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+            {FIELDS.map(f => (
+              <div key={f.key} style={{ background: "#F0FAF4", border: "1px solid #A8D5B5",
+                borderRadius: 8, padding: "10px 14px" }}>
+                <div style={{ fontSize: 11, color: "#2E7D4F", fontWeight: 500, marginBottom: 2 }}>
+                  {f.label}
+                </div>
+                <div className="mono" style={{ fontSize: 14, fontWeight: 600, color: "#1B5E35" }}>
+                  Within range
+                </div>
+                <div className="mono" style={{ fontSize: 10, color: "#6BAE85" }}>
+                  {f.healthy[0]}–{f.healthy[1]} {f.unit}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Advice */}
+        <div style={{ padding: "24px 36px", background: "var(--surface-2)" }}>
+          <div className="section-eyebrow" style={{ marginBottom: 8 }}>Recommended next step</div>
+          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "var(--text)" }}>
+            Your health profile falls within normal ranges across all measured indicators.
+            Maintain your current lifestyle — balanced nutrition, regular physical activity,
+            and routine annual check-ups are recommended to keep these values stable.
+          </p>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
+        <button className="btn btn-ghost" onClick={onEdit}>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M9.5 2.5l2 2L5 11l-3 1 1-3 6.5-6.5z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Edit inputs
+        </button>
+        <button className="btn btn-ghost" onClick={onRestart}>Start over</button>
+      </div>
+
+      <span className="disclaimer" style={{ marginTop: 16, display: "inline-flex" }}>
+        <svg className="icon" viewBox="0 0 12 12" fill="none">
+          <circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1"/>
+          <path d="M6 3.5v3M6 8.2v.3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+        </svg>
+        For educational use only — not a medical diagnosis.
+      </span>
+    </div>
+  );
+}
+
 function ResultScreen({ values, result, onRestart, onEdit }) {
+  // Natural / healthy result — all values in range
+  if (result && result.prediction === "natural") {
+    return <NaturalScreen onRestart={onRestart} onEdit={onEdit} />;
+  }
+
   // Use real model result; fall back to local if result missing
   const probs = useMemo(() => {
     if (result && result.probs) return result.probs;
