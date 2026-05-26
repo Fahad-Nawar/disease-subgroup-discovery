@@ -10,7 +10,8 @@
       "Bash(python)",
       "Bash(git mv *)",
       "Bash(mv \"Web/api.py\" \"Web/risk_predictor_api.py\")",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(git config *)"
     ]
   }
 }
