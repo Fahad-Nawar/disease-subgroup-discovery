@@ -49,13 +49,11 @@ function App() {
         <div className="brand">
           <div className="brand-mark">A</div>
           <div>
-            Aegis Health
-            <span style={{ color: "var(--text-subtle)", fontWeight: 400, marginLeft: 8, fontSize: 12 }}>Risk Predictor</span>
+            <span style={{ color: "var(--text-subtle)", fontWeight: 400, fontSize: 12 }}>Risk Predictor</span>
           </div>
         </div>
         <div className="nav-right">
           <span><span className="dot"></span>Model online</span>
-          <span className="mono" style={{ fontSize: 12 }}>v2.1.0</span>
           <span style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--primary-50)",
             color: "var(--primary)", display: "grid", placeItems: "center", fontSize: 12, fontWeight: 600 }}>DR</span>
         </div>
@@ -68,11 +66,6 @@ function App() {
         {screen === "form"    && <FormScreen values={values} setValues={setValues} onSubmit={go.submit} onReset={go.reset} />}
         {screen === "loading" && <LoadingScreen values={values} onDone={go.done} />}
         {screen === "result"  && <ResultScreen values={values} result={result} onRestart={go.restart} onEdit={go.edit} />}
-      </div>
-
-      <div className="footer">
-        <span>© 2026 Aegis Health Systems · Clinical Decision Support</span>
-        <span className="mono">Session secured · Inputs not retained</span>
       </div>
 
       <TweaksPanel>

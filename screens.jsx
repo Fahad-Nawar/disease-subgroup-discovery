@@ -123,7 +123,7 @@ function IntroScreen({ onStart }) {
   return (
     <div className="container-narrow fade-up" style={{ paddingTop: 64, paddingBottom: 64 }}>
       <div className="section-eyebrow">Clinical Risk Assessment</div>
-      <h1 className="headline">Estimate your risk profile from nine measurements.</h1>
+      <h1 className="headline">Estimate your risk profile from three measurements.</h1>
       <p className="lead">
         Aegis Health applies a Gaussian Mixture Model trained on de-identified population data
         to estimate relative risk across three chronic conditions: hypertension, type II diabetes,
@@ -131,7 +131,7 @@ function IntroScreen({ onStart }) {
       </p>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 32 }}>
         {[
-          { n: "01", t: "Enter measurements", d: "Nine standard clinical values from a recent panel or check-up." },
+          { n: "01", t: "Enter measurements", d: "Three standard clinical values from a recent panel or check-up." },
           { n: "02", t: "Model evaluates",     d: "Inputs are scaled and assigned to one of three risk clusters." },
           { n: "03", t: "Review breakdown",    d: "See probability across all three conditions plus a recommended next step." },
         ].map(item => (
@@ -206,7 +206,7 @@ function FormScreen({ values, setValues, onSubmit, onReset }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24 }}>
         <div>
           <div className="section-eyebrow">Step 1 · Measurements</div>
-          <h1 className="headline" style={{ fontSize: 26, marginBottom: 4 }}>Enter nine clinical values</h1>
+          <h1 className="headline" style={{ fontSize: 26, marginBottom: 4 }}>Enter three clinical values</h1>
           <p className="lead" style={{ fontSize: 14 }}>
             Each input is benchmarked against population norms. Markers show where your value sits relative to the healthy band.
           </p>
@@ -337,7 +337,7 @@ function NaturalScreen({ onRestart, onEdit }) {
             Natural — All Healthy
           </div>
           <div style={{ fontSize: 15, color: "#2E7D4F", marginTop: 8 }}>
-            All nine measurements are within the healthy reference range.
+            All three measurements are within the healthy reference range.
           </div>
         </div>
 
@@ -529,10 +529,7 @@ function ResultScreen({ values, result, onRestart, onEdit }) {
               {[
                 ["Algorithm", "GaussianMixture"],
                 ["Components", "3"],
-                ["Covariance", "full"],
                 ["Training set", "1,000 pts"],
-                ["Source", isRealModel ? "GMM API" : "Local approx"],
-                ["Build", "v2.1.0"],
               ].map(([k, v]) => (
                 <div key={k}>
                   <div style={{ color: "var(--text-subtle)" }}>{k}</div>
@@ -542,10 +539,6 @@ function ResultScreen({ values, result, onRestart, onEdit }) {
             </div>
           </div>
 
-          <span className="disclaimer" style={{ alignSelf: "flex-start" }}>
-            <svg className="icon" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" strokeWidth="1"/><path d="M6 3.5v3M6 8.2v.3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
-            For educational use only — not a medical diagnosis.
-          </span>
         </div>
       </div>
     </div>
