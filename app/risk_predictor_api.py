@@ -12,12 +12,12 @@ from sklearn.preprocessing import StandardScaler
 app = Flask(__name__)
 CORS(app)
 
-MODEL_PATH = "model/gmm_3feature_bundle.pkl"   # 3-feature model
+MODEL_PATH = "models/gmm_3feature_bundle.pkl"   # 3-feature model
 CSV_NAME   = "diet_recommendations_dataset (best).csv"
 NUMERICAL  = ["BMI", "Glucose_mg/dL", "Blood_Pressure_mmHg"]   # 3 key biomarkers
 
 def _find_csv():
-    candidates = [f"dataset/{CSV_NAME}", f"../{CSV_NAME}", f"../dataset/{CSV_NAME}", CSV_NAME]
+    candidates = [f"data/{CSV_NAME}", f"../data/{CSV_NAME}", f"../../data/{CSV_NAME}", CSV_NAME]
     found = next((p for p in candidates if os.path.exists(p)), None)
     if found is None:
         hits = glob.glob(f"**/{CSV_NAME}", recursive=True)
@@ -46,7 +46,7 @@ def _load_or_train():
     gmm_map = {c: ct.loc[c].idxmax() for c in ct.index}
 
     bundle = {"gmm": gmm, "scaler": scaler, "gmm_map": gmm_map}
-    os.makedirs("model", exist_ok=True)
+    os.makedirs("models", exist_ok=True)
     with open(MODEL_PATH, "wb") as f:
         pickle.dump(bundle, f)
     print("Model trained and saved.")
