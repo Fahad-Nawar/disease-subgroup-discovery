@@ -3,7 +3,7 @@
 Unsupervised machine learning project to discover natural disease subgroups from clinical biomarkers.
 
 **Course:** ARTI 308 – Machine Learning  
-**Institution:** King Abdul Aziz University
+**Institution:** Imam Abdulrahman Bin Faisal University
 
 ---
 
@@ -132,31 +132,6 @@ disease-subgroup-discovery/
 http://localhost:5000
 ```
 
-### API Endpoint
-```
-POST /predict
-{
-  "bmi": 28.5,
-  "glucose": 150,
-  "sbp": 140
-}
-```
-
-Response:
-```json
-{
-  "prediction": "Diabetes",
-  "probabilities": {
-    "Diabetes": 0.78,
-    "Hypertension": 0.15,
-    "Obesity": 0.07
-  },
-  "confidence": 0.78
-}
-```
-
----
-
 ## Team Members
 
 | # | Name | Student ID | Role |
@@ -164,32 +139,9 @@ Response:
 | 1 | Wesam Jaber Almalki | 2240005660 | Project Leader |
 | 2 | Fahad Nawar Alotaibi | 2240002024 | ML Development |
 | 3 | Fawaz Alshahrani | 2240005571 | Data Analysis |
-| 4 | Faris Alshahrani | 2240005572 | Backend Development |
-| 5 | Ahmed Albouainain | 2240006128 | Frontend Development |
+| 4 | Faris Alshahrani | 2240005572 | ML Development |
+| 5 | Ahmed Albouainain | 2240006128 | Data Analysis |
 | 6 | Anas Hamzi | 2240003869 | Testing & QA |
-
----
-
-## Repository
-
-- **GitHub:** https://github.com/Fahad-Nawar/disease-subgroup-discovery
-- **Main Branch:** production-ready code
-- **Commit History:** Clean, descriptive commits
-
----
-
-## References
-
-- **scikit-learn 1.x:** KMeans, AgglomerativeClustering, DBSCAN, GaussianMixture, StandardScaler, PCA, TSNE
-- **scipy:** linkage, dendrogram
-- **pandas / numpy / matplotlib / seaborn:** Data handling and visualization
-- **Flask / React:** Web application framework
-
----
-
-## License
-
-This project is part of ARTI 308 (Machine Learning) coursework at King Abdul Aziz University.
 
 ---
 
