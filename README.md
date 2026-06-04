@@ -23,55 +23,57 @@ This project applies unsupervised learning algorithms (K-Means, Hierarchical Clu
 
 ```
 disease-subgroup-discovery/
-├── app/                          # Flask API + React Frontend
-│   ├── risk_predictor_api.py     # Backend prediction API (Flask)
-│   ├── Health Predictor.html     # Main HTML interface
-│   ├── app.jsx                   # React app component
-│   ├── screens.jsx               # Disease risk prediction screens
-│   └── tweaks-panel.jsx          # Interactive configuration panel
+├── app/                                    # Flask API + React Frontend
+│   ├── risk_predictor_api.py              # Backend prediction API (Flask)
+│   ├── Health Predictor.html              # Main HTML interface
+│   ├── app.jsx                            # React app component
+│   ├── screens.jsx                        # Disease risk prediction screens
+│   └── tweaks-panel.jsx                   # Interactive configuration panel
 │
-├── data/                         # Training datasets
-│   ├── dataset for machine project.csv
-│   │   └── 1,000 patients × 4 columns (BMI, Glucose, Blood Pressure, Disease Type)
-│   ├── diet_recommendations_dataset (best).csv
-│   └── diet_dataset_modified after change harte.csv
+├── data/                                  # Training datasets
+│   └── dataset for machine project.csv    # 1,000 patients × 4 columns
+│                                          # (BMI, Glucose, Blood Pressure, Disease Type)
 │
-├── models/                       # Trained ML models
-│   └── gmm_3feature_bundle.pkl   # Gaussian Mixture Model (3-component)
-│       └── Contains: GMM, StandardScaler, cluster→disease mapping
+├── results/                               # Visualizations & analysis outputs (12 files)
+│   ├── algorithm_comparison.png           # Algorithm performance comparison
+│   ├── cluster_profiles_radar.png         # Disease group profiles
+│   ├── dbscan_clusters.png                # DBSCAN clustering visualization
+│   ├── dbscan_kdistance.png               # DBSCAN eps selection plot
+│   ├── eda_categorical.png                # Disease distribution
+│   ├── eda_correlation.png                # Biomarker correlation heatmap
+│   ├── gmm_clusters.png                   # GMM clustering results
+│   ├── hierarchical_clusters.png          # Hierarchical clustering results
+│   ├── hierarchical_dendrogram.png        # Dendrogram visualization
+│   ├── kmeans_clusters.png                # K-Means clustering results
+│   ├── kmeans_selection.png               # Elbow method & silhouette plot
+│   ├── pca_variance.png                   # PCA variance explained
+│   └── train_test_evaluation.png          # Train/test generalization plot
 │
-├── results/                      # Visualizations & analysis outputs
-│   ├── image 5/                  # Model version 5 experiment results
-│   ├── image 6/                  # Model version 6 experiment results
-│   ├── image 7 last/             # Latest/final results (13 visualizations)
-│   ├── image for version 1/      # Historical version 1
-│   ├── image for version 2/      # Historical version 2
-│   ├── image for version 3/      # Historical version 3
-│   └── image version 4/          # Historical version 4
-│       └── Contents: EDA plots, clustering visualizations, algorithm comparisons,
-│                     dendrograms, radar charts, train/test evaluations
+├── tests/                                 # Test cases & verification screenshots
+│   ├── case 1/                            # Test scenario 1
+│   │   ├── Screenshot 2026-05-26 055123.png
+│   │   ├── Screenshot 2026-05-26 055135.png
+│   │   └── g
+│   ├── case 2/                            # Test scenario 2
+│   │   ├── Screenshot 2026-05-26 052302.png
+│   │   ├── Screenshot 2026-05-26 054151.png
+│   │   └── m
+│   └── case 3/                            # Test scenario 3
+│       ├── Screenshot 2026-05-26 052837.png
+│       └── Screenshot 2026-05-26 053944.png
 │
-├── tests/                        # Test cases & verification screenshots
-│   ├── case 1/                   # Test scenario 1 with screenshots
-│   ├── case 2/                   # Test scenario 2 with screenshots
-│   └── case 3/                   # Test scenario 3 with screenshots
-│
-├── docs/                         # Project documentation & reports
+├── docs/                                  # Project documentation & reports
 │   ├── ARTI_308_Final_Report_Group4.pdf
-│   ├── ARTI_308_Final_Report_Group4.docx
 │   ├── ARTI_308_Progress_Report_Group4.pdf
-│   ├── ARTI_308_Progress_Report_Group4.docx
-│   ├── ARTI_308_Progress_Report_Group4_for final.docx
-│   ├── ARTI 308 Project Progress Report Template.docx
-│   ├── ARTI 308 Grading rubrics for progress report.docx
 │   └── Proposal.pdf
 │
-├── disease_risk_prediction.ipynb # Main analysis & modeling notebook
-│   └── Complete workflow: EDA, preprocessing, clustering, evaluation
+├── disease_risk_prediction.ipynb          # Main analysis & modeling notebook
+│                                          # Complete workflow: EDA, preprocessing,
+│                                          # clustering, evaluation, visualization
 │
-├── CONTRIBUTING.md               # Contribution guidelines
-├── README.md                     # This file
-└── .claude/settings.local.json   # Claude Code configuration
+├── CONTRIBUTING.md                        # Contribution guidelines for team
+├── README.md                              # This file
+└── .gitignore                             # Git ignore rules
 ```
 
 ---
